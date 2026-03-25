@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Kitoblar{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title"><span>📚</span>Kitoblar</h1>
+    <a href="{{ url_for('book_add') }}" class="btn btn-primary">➕ Yangi kitob</a>
+</div>
+
+<div class="card">
+    {% if books %}
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Kitob</th>
+                <th>Kategoriya</th>
+                <th>E-kitob narxi</th>
+                <th>Qog'oz narxi</th>
+                <th>Ombor</th>
+                <th>Amallar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for bid, b in books.items() %}
+            <tr>
+                <td class="text-muted">{{ bid }}</td>
+                <td>
+                    <div style="font-weight:600;">{{ b.title }}</div>
+                    <div class="text-muted" style="font-size:12px;">{{ b.author }}</div>
+                </td>
+                <td>
+                    {% if b.cat and categories.get(b.cat) %}
+                    <span class="badge badge-accent">{{ categories[b.cat][0] }} {{ categories[b.cat][1] }}</span>
+                    {% else %}
+                    <span class="text-muted">—</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if b.price_epub == 0 %}
+                    <span class="badge badge-success">Bepul</span>
+                    {% else %}
+                    {{ b.price_epub|fmt_price }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if b.price_book > 0 %}{{ b.price_book|fmt_price }}
+                    {% else %}<span class="text-muted">—</span>{% endif %}
+                </td>
+                <td>
+                    {% if b.has_physical %}
+                    <span class="badge {% if b.stock > 5 %}badge-success{% elif b.stock > 0 %}badge-warning{% else %}badge-danger{% endif %}">
+                        {{ b.stock }} ta
+                    </span>
+                    {% else %}<span class="text-muted">—</span>{% endif %}
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <a href="{{ url_for('book_edit', bid=bid) }}" class="btn btn-sm btn-warning">✏️</a>
+                        <form method="POST" action="{{ url_for('book_delete', bid=bid) }}" class="d-inline"
+                              onsubmit="return confirm('«{{ b.title }}» ni o\'chirmoqchimisiz?')">
+                            <button type="submit" class="btn btn-sm btn-danger">🗑</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">📭</div>
+        <p>Hali kitob qo'shilmagan</p>
+        <a href="{{ url_for('book_add') }}" class="btn btn-primary">➕ Birinchi kitobni qo'shing</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

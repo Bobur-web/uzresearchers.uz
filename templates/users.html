@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Foydalanuvchilar{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title"><span>👥</span>Foydalanuvchilar</h1>
+    <span class="badge badge-info" style="font-size:14px;padding:8px 16px;">Jami: {{ users|length }} ta</span>
+</div>
+
+<div class="card">
+    {% if users %}
+    <table>
+        <thead>
+            <tr>
+                <th>Telegram ID</th>
+                <th>Ism</th>
+                <th>Username</th>
+                <th>Qo'shilgan</th>
+                <th>Xaridlar</th>
+                <th>Istaklar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for uid, u in users.items() %}
+            <tr>
+                <td><code style="background:rgba(108,92,231,0.15);padding:2px 8px;border-radius:4px;color:var(--accent-bright);">{{ uid }}</code></td>
+                <td style="font-weight:600;">{{ u.name }}</td>
+                <td class="text-muted">{{ ('@' ~ u.username) if u.username else '—' }}</td>
+                <td class="text-muted">{{ u.joined_at[:10] if u.joined_at else '—' }}</td>
+                <td><span class="badge badge-success">{{ user_stats[uid].purchased }} ta</span></td>
+                <td><span class="badge badge-warning">{{ user_stats[uid].wishlist }} ta</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">👥</div>
+        <p>Hali foydalanuvchi yo'q</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Panel{% endblock %} — Kitob Dunyosi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+<body>
+    {% if session.logged_in %}
+    <button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <span class="brand-icon">📱</span>
+            <h2>Kitob Dunyosi</h2>
+            <small>Admin Panel</small>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="{{ url_for('dashboard') }}" class="nav-item {% if request.endpoint == 'dashboard' %}active{% endif %}">
+                <span class="nav-icon">📊</span> Dashboard
+            </a>
+            <a href="{{ url_for('books_list') }}" class="nav-item {% if request.endpoint in ('books_list','book_add','book_edit') %}active{% endif %}">
+                <span class="nav-icon">📚</span> Kitoblar
+            </a>
+            <a href="{{ url_for('categories_list') }}" class="nav-item {% if request.endpoint == 'categories_list' %}active{% endif %}">
+                <span class="nav-icon">📂</span> Kategoriyalar
+            </a>
+            <div class="nav-divider"></div>
+            <a href="{{ url_for('orders_list') }}" class="nav-item {% if request.endpoint in ('orders_list','order_detail') %}active{% endif %}">
+                <span class="nav-icon">🧾</span> Buyurtmalar
+            </a>
+            <a href="{{ url_for('users_list') }}" class="nav-item {% if request.endpoint == 'users_list' %}active{% endif %}">
+                <span class="nav-icon">👥</span> Foydalanuvchilar
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="logout-btn">🚪 Chiqish</a>
+        </div>
+    </aside>
+    <main class="main-content">
+    {% endif %}
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for cat, msg in messages %}
+        <div class="flash-msg flash-{{ cat }}">{{ msg }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+    {% if session.logged_in %}
+    </main>
+    {% endif %}
+
+    <script>
+        // Auto-hide flash messages
+        setTimeout(() => {
+            document.querySelectorAll('.flash-msg').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateX(100%)';
+                setTimeout(() => el.remove(), 400);
+            });
+        }, 4000);
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Buyurtma {{ order.order_id }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title"><span>🧾</span>Buyurtma: {{ order.order_id }}</h1>
+    <a href="{{ url_for('orders_list') }}" class="btn btn-sm btn-danger">◀ Orqaga</a>
+</div>
+
+<div class="stats-grid">
+    <div class="card">
+        <div class="card-header"><h3>📋 Buyurtma ma'lumotlari</h3></div>
+        <div class="card-body">
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <div class="detail-label">Buyurtma raqami</div>
+                    <div class="detail-value">{{ order.order_id }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Holati</div>
+                    <div class="detail-value">
+                        {% if '✅' in order.status %}<span class="badge badge-success">✅ Tasdiqlangan</span>
+                        {% elif '⏳' in order.status %}<span class="badge badge-warning">⏳ Kutmoqda</span>
+                        {% else %}<span class="badge badge-danger">❌ Rad etilgan</span>{% endif %}
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Mijoz</div>
+                    <div class="detail-value">{{ order.name }} <span class="text-muted">({{ order.uid }})</span></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Sana</div>
+                    <div class="detail-value">{{ order.date }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Jami summa</div>
+                    <div class="detail-value text-accent">{{ order.total|fmt_price }}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Manzil</div>
+                    <div class="detail-value">{{ order.address or '—' }}</div>
+                </div>
+                {% if order.phone %}
+                <div class="detail-item">
+                    <div class="detail-label">Telefon</div>
+                    <div class="detail-value">{{ order.phone }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h3>📦 Kitoblar</h3></div>
+        <div class="card-body">
+            {% for bid, item in items.items() %}
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border-glass);">
+                <div>
+                    <span style="font-size:18px;">{{ '📱' if item.type == 'epub' else '📦' }}</span>
+                    <span style="font-weight:600;margin-left:8px;">{{ books_info[bid].title if books_info.get(bid) else 'Kitob #' ~ bid }}</span>
+                    <span class="badge badge-accent" style="margin-left:8px;">{{ 'E-kitob' if item.type == 'epub' else 'Qog\'oz' }}</span>
+                </div>
+                <span class="text-muted">× {{ item.qty }}</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="card-body" style="border-top:1px solid var(--border-glass);">
+            <h3 style="margin-bottom:16px;">⚙️ Holatni o'zgartirish</h3>
+            <form method="POST" action="{{ url_for('order_status_update', oid=order.order_id) }}" style="display:flex;gap:12px;flex-wrap:wrap;">
+                <select name="status" class="form-control" style="max-width:250px;">
+                    <option value="⏳ Kutmoqda" {% if '⏳' in order.status %}selected{% endif %}>⏳ Kutmoqda</option>
+                    <option value="✅ Tasdiqlandi" {% if '✅' in order.status %}selected{% endif %}>✅ Tasdiqlandi</option>
+                    <option value="❌ Rad etildi" {% if '❌' in order.status %}selected{% endif %}>❌ Rad etildi</option>
+                </select>
+                <button type="submit" class="btn btn-primary">💾 Saqlash</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

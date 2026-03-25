@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Kirish{% endblock %}
+{% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-logo">🔐</div>
+        <h1 class="login-title">Kitob Dunyosi</h1>
+        <p class="login-subtitle">Admin paneliga kirish</p>
+        <form method="POST">
+            <div class="form-group">
+                <label for="password">Parol</label>
+                <input type="password" id="password" name="password" class="form-control"
+                       placeholder="Admin parolni kiriting..." autofocus required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:14px;">
+                🚀 Kirish
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

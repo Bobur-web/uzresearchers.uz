@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Buyurtmalar{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title"><span>🧾</span>Buyurtmalar</h1>
+    <div class="filter-tabs">
+        <a href="{{ url_for('orders_list') }}" class="filter-tab {% if not status_filter %}active{% endif %}">Barchasi</a>
+        <a href="{{ url_for('orders_list', status='⏳') }}" class="filter-tab {% if '⏳' in status_filter %}active{% endif %}">⏳ Kutmoqda</a>
+        <a href="{{ url_for('orders_list', status='✅') }}" class="filter-tab {% if '✅' in status_filter %}active{% endif %}">✅ Tasdiqlangan</a>
+        <a href="{{ url_for('orders_list', status='❌') }}" class="filter-tab {% if '❌' in status_filter %}active{% endif %}">❌ Rad etilgan</a>
+    </div>
+</div>
+
+<div class="card">
+    {% if orders %}
+    <table>
+        <thead>
+            <tr>
+                <th>Buyurtma</th>
+                <th>Mijoz</th>
+                <th>Summa</th>
+                <th>Sana</th>
+                <th>Holat</th>
+                <th>Amallar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for o in orders %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('order_detail', oid=o.order_id) }}" style="color:var(--accent-bright);text-decoration:none;font-weight:600;">
+                        {{ o.order_id }}
+                    </a>
+                </td>
+                <td>
+                    <div style="font-weight:500;">{{ o.name }}</div>
+                    <div class="text-muted" style="font-size:12px;">ID: {{ o.uid }}</div>
+                </td>
+                <td style="font-weight:600;">{{ o.total|fmt_price }}</td>
+                <td class="text-muted">{{ o.date }}</td>
+                <td>
+                    {% if '✅' in o.status %}<span class="badge badge-success">✅ Tasdiqlangan</span>
+                    {% elif '⏳' in o.status %}<span class="badge badge-warning">⏳ Kutmoqda</span>
+                    {% else %}<span class="badge badge-danger">❌ Rad etilgan</span>{% endif %}
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <a href="{{ url_for('order_detail', oid=o.order_id) }}" class="btn btn-sm btn-primary">👁</a>
+                        <form method="POST" action="{{ url_for('order_delete', oid=o.order_id) }}" class="d-inline"
+                              onsubmit="return confirm('Bu buyurtmani o\'chirmoqchimisiz?')">
+                            <button type="submit" class="btn btn-sm btn-danger">🗑</button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-icon">📭</div>
+        <p>Buyurtmalar topilmadi</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

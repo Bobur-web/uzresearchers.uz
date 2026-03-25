@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}{{ "Kitob tahrirlash" if book else "Yangi kitob" }}{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title"><span>{{ "✏️" if book else "➕" }}</span>{{ "Kitob tahrirlash" if book else "Yangi kitob qo'shish" }}</h1>
+    <a href="{{ url_for('books_list') }}" class="btn btn-sm btn-danger">◀ Orqaga</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Kitob nomi *</label>
+                    <input type="text" name="title" class="form-control" value="{{ book.title if book else '' }}" required placeholder="Kitob sarlavhasi">
+                </div>
+                <div class="form-group">
+                    <label>Muallif *</label>
+                    <input type="text" name="author" class="form-control" value="{{ book.author if book else '' }}" required placeholder="Muallif ismi">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>E-kitob narxi (so'm, 0 = bepul)</label>
+                    <input type="number" name="price_epub" class="form-control" value="{{ book.price_epub if book else 0 }}" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Qog'oz kitob narxi (so'm)</label>
+                    <input type="number" name="price_book" class="form-control" value="{{ book.price_book if book else 0 }}" min="0">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Kategoriya</label>
+                    <select name="cat" class="form-control">
+                        <option value="">— Tanlang —</option>
+                        {% for key, (emoji, label) in categories.items() %}
+                        <option value="{{ key }}" {% if book and book.cat == key %}selected{% endif %}>{{ emoji }} {{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Badge</label>
+                    <input type="text" name="badge" class="form-control" value="{{ book.badge if book else '🆕 Yangi' }}" placeholder="🔥 Bestseller">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Tavsif</label>
+                <textarea name="desc" class="form-control" placeholder="Kitob haqida qisqacha...">{{ book.desc if book else '' }}</textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>PDF havola</label>
+                    <input type="url" name="epub_url" class="form-control" value="{{ book.epub_url if book else '' }}" placeholder="https://drive.google.com/...">
+                </div>
+                <div class="form-group">
+                    <label>Namuna havola</label>
+                    <input type="url" name="preview" class="form-control" value="{{ book.preview if book else '' }}" placeholder="https://drive.google.com/...">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Fayl hajmi</label>
+                    <input type="text" name="size_mb" class="form-control" value="{{ book.size_mb if book else '1 MB' }}" placeholder="2.5 MB">
+                </div>
+                <div class="form-group">
+                    <label>Sahifalar soni</label>
+                    <input type="number" name="pages" class="form-control" value="{{ book.pages if book else 0 }}" min="0">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Chop etilgan yil</label>
+                    <input type="number" name="year" class="form-control" value="{{ book.year if book else 2024 }}" min="1900" max="2100">
+                </div>
+                <div class="form-group">
+                    <label>Reyting (1-5)</label>
+                    <input type="number" name="rating" class="form-control" value="{{ book.rating if book else 5.0 }}" min="0" max="5" step="0.1">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <div class="form-check">
+                        <input type="checkbox" name="has_physical" id="has_physical"
+                               {% if book and book.has_physical %}checked{% endif %}
+                               onchange="document.getElementById('stock_group').style.display=this.checked?'block':'none'">
+                        <label for="has_physical" style="text-transform:none;letter-spacing:0;">📦 Qog'oz kitob mavjud</label>
+                    </div>
+                </div>
+                <div class="form-group" id="stock_group" style="{% if not book or not book.has_physical %}display:none{% endif %}">
+                    <label>Ombor soni</label>
+                    <input type="number" name="stock" class="form-control" value="{{ book.stock if book else 0 }}" min="0">
+                </div>
+            </div>
+
+            <div style="margin-top:24px;display:flex;gap:12px;">
+                <button type="submit" class="btn btn-primary">💾 {{ "Saqlash" if book else "Qo'shish" }}</button>
+                <a href="{{ url_for('books_list') }}" class="btn btn-danger">Bekor qilish</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

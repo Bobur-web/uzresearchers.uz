@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title"><span>📊</span>Dashboard</h1>
+</div>
+
+<div class="stats-grid">
+    <div class="stat-card accent">
+        <div class="stat-icon">📚</div>
+        <div class="stat-value">{{ stats.books_count }}</div>
+        <div class="stat-label">Kitoblar</div>
+    </div>
+    <div class="stat-card success">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">{{ stats.revenue|fmt_price }}</div>
+        <div class="stat-label">Jami daromad</div>
+    </div>
+    <div class="stat-card warning">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-value">{{ stats.pending }}</div>
+        <div class="stat-label">Kutayotgan</div>
+    </div>
+    <div class="stat-card info">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value">{{ stats.users_count }}</div>
+        <div class="stat-label">Foydalanuvchilar</div>
+    </div>
+</div>
+
+<div class="stats-grid">
+    <div class="card">
+        <div class="card-header">
+            <h3>🏆 Top kitoblar</h3>
+        </div>
+        <div class="card-body">
+            {% if stats.top_books %}
+            {% for bid, title, cnt in stats.top_books %}
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-glass);">
+                <span>📱 {{ title }}</span>
+                <span class="badge badge-accent">{{ cnt }} ta sotilgan</span>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p class="text-muted">Hali sotuvlar yo'q</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3>🧾 Oxirgi buyurtmalar</h3>
+            <a href="{{ url_for('orders_list') }}" class="btn btn-sm btn-primary">Barchasini ko'rish</a>
+        </div>
+        <div class="card-body">
+            {% if recent_orders %}
+            {% for o in recent_orders %}
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-glass);">
+                <div>
+                    <a href="{{ url_for('order_detail', oid=o.order_id) }}" style="color:var(--accent-bright);text-decoration:none;font-weight:600;">{{ o.order_id }}</a>
+                    <div class="text-muted" style="font-size:12px;">{{ o.name }} — {{ o.date }}</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-weight:600;">{{ o.total|fmt_price }}</div>
+                    {% if '✅' in o.status %}<span class="badge badge-success">Tasdiqlangan</span>
+                    {% elif '⏳' in o.status %}<span class="badge badge-warning">Kutmoqda</span>
+                    {% else %}<span class="badge badge-danger">Rad etilgan</span>{% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p class="text-muted">Hali buyurtmalar yo'q</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
