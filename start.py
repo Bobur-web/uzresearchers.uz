@@ -10,6 +10,7 @@ Ishga tushirish:
 import threading
 import os
 import sys
+import database as db
 
 def run_bot():
     """Telegram botni ishga tushirish."""
