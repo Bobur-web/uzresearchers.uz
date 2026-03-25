@@ -22,9 +22,7 @@ app.secret_key = os.getenv("SECRET_KEY", "kitob-dunyosi-secret-key-2024")
 
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin123")
 
-# Bazani ishga tushirish
-db.init_db()
-db.seed_defaults()
+# Baza start.py orqali ishga tushiriladi
 
 
 # ══════════════════════════════════════════════

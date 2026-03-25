@@ -33,9 +33,10 @@ ADMIN_ID  = int(os.getenv("ADMIN_ID", "1008681848"))
 
 bot = telebot.TeleBot(BOT_TOKEN, parse_mode="Markdown")
 
-# Bazani ishga tushirish
-db.init_db()
-db.seed_defaults()
+# Baza start.py orqali ishga tushiriladi
+# Agar filolog.py to'g'ridan-to'g'ri ishga tushirilsa:
+if __name__ != "__main__":
+    pass  # start.py orqali ishga tushadi
 
 PDF_APPS = (
     "📱 *PDF o'qish uchun ilovalar:*\n"
@@ -849,8 +850,9 @@ def unknown(m):
 #  ISHGA TUSHIRISH
 # ══════════════════════════════════════════════
 if __name__ == "__main__":
-    print("╔══════════════════════════════╗")
-    print("║  📱 KITOB DUNYOSI — Ishga    ║")
-    print("║     tushdi!                  ║")
-    print("╚══════════════════════════════╝")
+    db.init_db()
+    db.seed_defaults()
+    print("=" * 30)
+    print("  KITOB DUNYOSI - Ishga tushdi!")
+    print("=" * 30)
     bot.infinity_polling(timeout=30, long_polling_timeout=20)

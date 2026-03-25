@@ -17,10 +17,11 @@ _local = threading.local()
 def get_conn():
     """Thread-safe ulanishni qaytaradi."""
     if not hasattr(_local, "conn") or _local.conn is None:
-        _local.conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+        _local.conn = sqlite3.connect(DB_PATH, check_same_thread=False, timeout=30)
         _local.conn.row_factory = sqlite3.Row
         _local.conn.execute("PRAGMA journal_mode=WAL")
         _local.conn.execute("PRAGMA foreign_keys=ON")
+        _local.conn.execute("PRAGMA busy_timeout=10000")
     return _local.conn
 
 

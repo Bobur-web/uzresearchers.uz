@@ -31,6 +31,11 @@ if __name__ == "__main__":
     print("  Bot + Admin Panel")
     print("=" * 40)
 
+    # DB ni bir marta main threadda ishga tushirish (race condition oldini olish)
+    db.init_db()
+    db.seed_defaults()
+    print("[DB] Baza tayyor.")
+
     bot_thread = threading.Thread(target=run_bot, daemon=True)
     admin_thread = threading.Thread(target=run_admin, daemon=True)
 
